@@ -37,5 +37,12 @@ module.exports = {
   // add rules configurations here
   rules: {
     "import/no-default-export": "off",
+    "no-console": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "import/no-named-as-default": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "no-undef": "off",
   },
 };

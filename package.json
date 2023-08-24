@@ -9,8 +9,9 @@
   "devDependencies": {
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "tsconfig": "*",
-    "turbo": "latest"
+    "tsconfig": "workspace:*",
+    "turbo": "latest",
+    "typescript": "^5.1.6"
   },
   "name": "inngest-partykit-nextjs-openai",
   "packageManager": "npm@9.5.1",

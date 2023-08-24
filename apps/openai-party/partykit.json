@@ -1,0 +1,4 @@
+{
+  "name": "openai-party",
+  "main": "src/server.ts"
+}
