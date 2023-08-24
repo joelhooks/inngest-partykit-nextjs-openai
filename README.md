@@ -37,6 +37,8 @@ Inngest is running at http://localhost:8288 and the wb app server is running at 
 
 Partykit doesn't have a UI, but is running at http://127.0.0.1:1999/
 
+`OPENAI_API_KEY` needs to be set in `/apps/web/.env.local` for the web app to work.
+
 ## What's inside?
 
 This example includes the following packages/apps:
