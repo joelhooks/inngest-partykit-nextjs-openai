@@ -4,6 +4,8 @@ This is an example using [Inngest](https://inngest.com) and
 [Partykit](https://github.com/partykit/partykit) to build a collaborative
 AI assisted workflow.
 
+[quick loom video](https://www.loom.com/share/255222fa0ff24cb99765693eb6e6af91?sid=ad8b34a7-d30f-4d52-bc7e-59f2ce32c503) showing where it's at right now.
+
 Inngest is used to initiate and orchestrate the workflow, and Partykit is used
 as a proxy to the OpenAI API. We need a proxy because the OpenAI API **streams**
 responses and we want to orchestrate actions based on suggestions and function
