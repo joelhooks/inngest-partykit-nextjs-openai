@@ -25,9 +25,15 @@ as a proxy for the streams and broadcast those responses to **every subscribed u
 
 ## How to use
 
-Start the we
+Get everything installed:
+
 ```shell
 pnpm install
+```
+
+Start everything like this:
+
+```shell
 pnpm dev
 ```
 
