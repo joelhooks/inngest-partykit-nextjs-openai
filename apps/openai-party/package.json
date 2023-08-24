@@ -7,7 +7,10 @@
     "deploy": "partykit deploy"
   },
   "dependencies": {
+
+    "inngest": "^2.5.2",
     "partysocket": "0.0.0-3228764"
+
   },
   "devDependencies": {
     "partykit": "0.0.0-3228764",

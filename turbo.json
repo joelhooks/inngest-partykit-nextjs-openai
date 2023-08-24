@@ -4,7 +4,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["OPENAI_API_KEY", "NEXT_PUBLIC_PARTY_KIT_URL"],
+      "env": ["OPENAI_API_KEY", "NEXT_PUBLIC_PARTY_KIT_URL", "OPENAI_MODEL_NAME"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {},

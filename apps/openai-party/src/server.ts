@@ -7,6 +7,7 @@ import type {
   PartyServerOptions,
   PartyConnectionContext,
 } from "partykit/server";
+import { Inngest } from "inngest";
 
 // PartyKit servers now implement PartyServer interface
 export default class Main implements PartyServer {
@@ -30,12 +31,16 @@ export default class Main implements PartyServer {
 
   // Servers can now keep state in class instance variables
   messages: string[] = [];
+  inngest: Inngest
 
   // PartyServer receives the Party (previous PartyKitRoom) as a constructor argument
   // instead of receiving the `room` argument in each method.
   readonly party: Party;
   constructor(party: Party) {
     this.party = party;
+    this.inngest = new Inngest({
+      name: "Inngest + PartyKit: OpenAI Function invocation app",
+    })
   }
 
   // There's now a new lifecycle method `onStart` which fires before first connection
@@ -62,25 +67,12 @@ export default class Main implements PartyServer {
         `Party ${this.party.id} has received ${this.messages.length} messages`
     );
   }
-  async onConnect(connection: PartyConnection, ctx: PartyConnectionContext) {
-    // You can now read the room state from `this.party` instead.
-    this.party.broadcast(
-        "A new connection has joined the party! Say hello to " + connection.id
-    );
-
-    // room.connections is now called room.getConnections(tag?)
-    // that receives an optional tag argument to filter connections
-    const country = ctx.request.cf?.country as string;
-    for (const compatriot of this.party.getConnections(country)) {
-      compatriot.send(`${connection.id} is also from ${country}!`);
-    }
-  }
+  async onConnect(connection: PartyConnection, ctx: PartyConnectionContext) {}
 
   // Previously onMessage, onError, onClose were only called for hibernating parties.
   // They're now available for all parties, so you no longer need to manually
   // manage event handlers in onConnect!
   async onMessage(message: string, connection: PartyConnection) {
-    connection.send("Pong!");
     this.party.broadcast(message, [connection.id]);
   }
   async onError(connection: PartyConnection, err: Error) {
@@ -88,6 +80,12 @@ export default class Main implements PartyServer {
   }
   async onClose(connection: PartyConnection) {
     console.log("Closed " + connection.id);
+    this.inngest.send({
+      name: "api/chat.cancelled",
+      data: {
+        requestId: connection.id,
+      },
+    });
   }
 }
 
