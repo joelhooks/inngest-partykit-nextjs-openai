@@ -1,34 +1,54 @@
-import { useId, useRef, useEffect, useState, useCallback } from "react";
+import {  useRef, useEffect, useState, useCallback } from "react";
 import { customAlphabet } from "nanoid";
 import type { UseChatOptions } from "ai/react";
 import type {
   ChatRequestOptions,
   CreateMessage,
   Message,
-
 } from "ai";
 import usePartySocket from "partysocket/react";
 
+const nanoid = customAlphabet(
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  7
+);
+
+/**
+ * 👋 We can tune function calls and avoid hallucinations with a system message.
+ * @see https://platform.openai.com/docs/guides/gpt/function-calling
+ */
+const DEFAULT_SYSTEM_MESSAGE: Message = {
+  id: nanoid(), 
+  role: "system", 
+  content: "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
+}
 
 export function useBackendChat({
   id,
-  initialMessages = [],
+  initialMessages = [DEFAULT_SYSTEM_MESSAGE],
   initialInput = "",
 }: UseChatOptions = {}) {
-  // Generate a unique id for the chat if not provided
-  const requestId = useRef<string>(nanoid()).current;
-  const chatId = id || requestId;
 
+  // Generate a unique id for the chat if not provided
+  
   const [lastMessage, setLastMessage] = useState<any | null>(null);
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<(Message | CreateMessage)[]>(initialMessages);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isConfirmRequired, setIsConfirmRequired] = useState<boolean>(false);
+  const socket = usePartySocket({
+    room: 'my-room',
+    host: process.env.NEXT_PUBLIC_PARTY_KIT_URL!,
+    onMessage: (message) => {
+      setLastMessage(message);
+    }
+  });
+  const requestId = useRef<string>(socket.id).current;
 
   // Keep a mutable buffer of incoming messages
   const [tokenBuffer, setTokenBuffer] = useState<string[]>([]);
 
   // Keep the latest messages in a ref.
-  const messagesRef = useRef<Message[]>(messages);
+  const messagesRef = useRef<(Message | CreateMessage)[]>(messages);
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
@@ -39,7 +59,7 @@ export function useBackendChat({
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const mutate = useCallback(
-    async (currentMessages?: Message[]) => {
+    async (currentMessages?: (CreateMessage | Message)[]) => {
       setIsLoading(true);
       await fetch("/api/chat", {
         method: "POST",
@@ -74,15 +94,7 @@ export function useBackendChat({
     [messages]
   );
 
-  usePartySocket({
-    room: "my-room",
-    host: process.env.NEXT_PUBLIC_PARTY_KIT_URL!,
-    onMessage: (message) => {
-      setLastMessage(message);
-    }
-  });
 
-  console.log('requestId', requestId)
 
   // State to update chat UI
   useEffect(() => {
@@ -105,8 +117,9 @@ export function useBackendChat({
         const call = JSON.parse(tokenBuffer.join(""));
         history = messages.concat([
           {
+            id: lastMessage.id,
             role: "assistant",
-            content: null,
+            content: '',
             function_call: call?.function_call || call,
             createdAt: new Date(),
           },
@@ -114,6 +127,7 @@ export function useBackendChat({
       } else {
         history = messages.concat([
           {
+            id: lastMessage.id,
             role: "assistant",
             content: tokenBuffer.join(""),
             createdAt: new Date(),
@@ -159,14 +173,14 @@ export function useBackendChat({
   );
 
   const onConfirm = useCallback(
-    async (ok: boolean) => {
+    async (confirm: boolean) => {
       setIsLoading(true);
       setIsConfirmRequired(false);
       await fetch("/api/chat", {
         method: "POST",
         body: JSON.stringify({
-          requestId: requestId,
-          confirm: ok,
+          requestId,
+          confirm
         }),
       });
     },
@@ -179,9 +193,7 @@ export function useBackendChat({
     requestId,
     isConfirmRequired,
     onConfirm,
-    // error,
     append,
-    // reload,
     stop,
     setMessages,
     input,
@@ -189,10 +201,7 @@ export function useBackendChat({
     handleInputChange,
     handleSubmit,
     isLoading,
+    socket
   };
 }
 
-const nanoid = customAlphabet(
-  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-  7
-);

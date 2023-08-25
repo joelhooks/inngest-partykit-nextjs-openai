@@ -4,7 +4,7 @@ import {
     OpenAIApi,
 } from "openai-edge"
 import {inngest} from "./inngest.server.client";
-import type { FunctionCall, Functions } from "./types";
+import type { AIMessage, FunctionCall, Functions } from "./types";
 import { Invoker } from "./invoker";
 import { LinearClient } from "@linear/sdk";
 
@@ -36,7 +36,7 @@ export const aibot = inngest.createFunction(
 
         // const messages = await invoker.start(event.data.messages, step);
         console.log(event.data.messages)
-        const messages = await invoker.start(event.data.messages, step);
+        const messages = await invoker.start(event.data.messages as AIMessage[], step);
         return messages;
     }
 );

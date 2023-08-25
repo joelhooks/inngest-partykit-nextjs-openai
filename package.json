@@ -2,16 +2,13 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "concurrently \"npm:dev-*\"",
-    "dev-inngest": "inngest dev",
+    "dev": "turbo run dev",
     "dev-turbo": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "concurrently": "^8.2.1",
     "eslint": "^8.47.0",
-    "inngest-cli": "^0.16.6",
     "prettier": "^3.0.2",
     "tsconfig": "workspace:*",
     "turbo": "latest",

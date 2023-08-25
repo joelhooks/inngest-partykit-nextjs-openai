@@ -1,10 +1,11 @@
-'use client'
+"use client";
 import * as React from 'react'
-import { useBackendChat } from '../hooks/use-backend-chat';
-import { Button } from '../components/ui/button';
+import ReactMarkdown from 'react-markdown'
+import { useBackendChat } from '@/hooks/use-backend-chat';
+import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loading } from "@/components/icons";
-import ReactMarkdown from 'react-markdown'
+import type {CreateMessage, Message} from "ai";
 
 export default function Chat() {
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -51,7 +52,7 @@ export default function Chat() {
       </div>
 
       <div className="text-sm sm:px-8 md:px-0 max-w-screen-md w-full mx-auto flex flex-col items-stretch shadow-sm">
-        {messages.map((m) => (
+        {messages.filter((m) => m.role !== 'system').map((m) => (
           <MessageUI message={m} key={m.id || m.content} />
         ))}
         <BufferUI buffer={buffer} />
@@ -114,10 +115,10 @@ export default function Chat() {
 }
 
 
-const MessageUI = ({ message, planning = false }: { message: Message, planning?: boolean }) => {
+const MessageUI = ({ message, planning = false }: { message: Message | CreateMessage, planning?: boolean }) => {
   let classes = "";
   switch (message.role) {
-    case "system", "assistant":
+    case "system" || "assistant":
       classes = "border-neutral-400 border-l-[3px] text-neutral-900 bg-neutral-100";
       break;
     default:
@@ -146,7 +147,7 @@ const MessageUI = ({ message, planning = false }: { message: Message, planning?:
   );
 };
 
-const CallUI = ({ message, planning = false }: { message: Message, planning?: boolean }) => {
+const CallUI = ({ message, planning = false }: { message: Message | CreateMessage, planning?: boolean }) => {
   const call = message.function_call === "string" ? JSON.parse(message.function_call) : message.function_call;
   return (
     <div
@@ -168,8 +169,8 @@ const CallUI = ({ message, planning = false }: { message: Message, planning?: bo
     );
 }
 
-const ConfirmUI = ({ onConfirm }) => {
-  useEffect(() => {
+const ConfirmUI = ({ onConfirm } : {onConfirm: (ok:boolean) => void}) => {
+  React.useEffect(() => {
     window.scrollTo({
       top: window.innerHeight*2,
       behavior: "smooth"
@@ -219,7 +220,8 @@ const BufferUI = ({ buffer }: { buffer: string }) => {
 
   if (buffer.indexOf("{") === 0) {
     let call = {
-      name: "Planning function..."
+      name: "Planning function...",
+      arguments: ''
     };
     try { call = JSON.parse(buffer) } catch(e) {};
     return (

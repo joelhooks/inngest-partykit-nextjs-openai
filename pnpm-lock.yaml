@@ -72,9 +72,11 @@ importers:
       autoprefixer: ^10.4.15
       class-variance-authority: ^0.7.0
       clsx: ^2.0.0
+      concurrently: ^8.2.1
       encoding: ^0.1.13
       eslint-config-custom: workspace:*
       inngest: ^2.5.2
+      inngest-cli: ^0.16.6
       json-schema: ^0.4.0
       nanoid: ^4.0.2
       next: ^13.4.19
@@ -147,17 +149,21 @@ importers:
       '@types/node': 18.17.8
       '@types/react': 18.2.21
       '@types/react-dom': 18.2.7
+      concurrently: 8.2.1
       encoding: 0.1.13
       eslint-config-custom: link:../../packages/eslint-config-custom
+      inngest-cli: 0.16.6_encoding@0.1.13
       tsconfig: link:../../packages/tsconfig
       typescript: 5.1.6
 
   packages/eslint-config-custom:
     specifiers:
+      '@next/eslint-plugin-next': ^13.4.19
       '@vercel/style-guide': ^4.0.2
       eslint-config-turbo: ^1.10.12
     devDependencies:
-      '@vercel/style-guide': 4.0.2_qj3u6ezxe2airdzjq3nyoxe24m
+      '@next/eslint-plugin-next': 13.4.19
+      '@vercel/style-guide': 4.0.2_tmambqne5iw57onizpw3trut2y
       eslint-config-turbo: 1.10.13_eslint@8.47.0
 
   packages/tsconfig:
@@ -2669,7 +2675,7 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vercel/style-guide/4.0.2_qj3u6ezxe2airdzjq3nyoxe24m:
+  /@vercel/style-guide/4.0.2_tmambqne5iw57onizpw3trut2y:
     resolution: {integrity: sha512-FroL+oOePzhw7n/I+f7zr4WNroGHT/+2TlW6WH9+CVSjMNsEyu7Qstj2mI5gWIBjT1Y2ZImKPppCzI2cIYmNZw==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -2689,6 +2695,7 @@ packages:
     dependencies:
       '@babel/core': 7.22.10
       '@babel/eslint-parser': 7.22.10_zyanktnjxrtfnufugapahvd75q
+      '@next/eslint-plugin-next': 13.4.19
       '@rushstack/eslint-patch': 1.3.3
       '@typescript-eslint/eslint-plugin': 5.62.0_dhbftgwluaf2pse3xeibjbv2du
       '@typescript-eslint/parser': 5.62.0_qj3u6ezxe2airdzjq3nyoxe24m
@@ -5203,7 +5210,7 @@ packages:
   /humanize-ms/1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
     dev: false
 
   /iconv-lite/0.4.24:
@@ -5368,6 +5375,20 @@ packages:
       adm-zip: 0.5.10
       debug: 4.3.4
       node-fetch: 2.6.7
+      tar: 6.1.11
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
+  /inngest-cli/0.16.6_encoding@0.1.13:
+    resolution: {integrity: sha512-rFOsJxmmW6xQ6tax+IazTPcR7FEaodLn7nEb0WO2817vsMVpfv0PtuthuEcZ7Wrx/0SzXxv9KVPreHuzM/QYSQ==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      adm-zip: 0.5.10
+      debug: 4.3.4
+      node-fetch: 2.6.7_encoding@0.1.13
       tar: 6.1.11
     transitivePeerDependencies:
       - encoding
@@ -6535,6 +6556,19 @@ packages:
       encoding:
         optional: true
     dependencies:
+      whatwg-url: 5.0.0
+    dev: true
+
+  /node-fetch/2.6.7_encoding@0.1.13:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      encoding: 0.1.13
       whatwg-url: 5.0.0
     dev: true
 
