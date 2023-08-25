@@ -45,7 +45,9 @@ Inngest is running at http://localhost:8288 and the wb app server is running at 
 
 Partykit doesn't have a UI, but is running at http://127.0.0.1:1999/
 
-`OPENAI_API_KEY` needs to be set in `/apps/web/.env.local` for the web app to work.
+`OPENAI_API_KEY` and `LINEAR_API_KEY` need to be set in `/apps/web/.env.local` for the web app to work.
+
+👋 Note that the linear function `delete` does NOT actually delete issues. You can create a Linear account for free as a way to test it out.
 
 ## What's inside?
 
