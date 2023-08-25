@@ -12,9 +12,7 @@
     },
     "dependencies": {
         "@linear/sdk": "^7.0.1",
-
         "@radix-ui/react-slot": "^1.0.2",
-
         "@tailwindcss/typography": "^0.5.9",
         "ai": "^2.2.8",
         "autoprefixer": "^10.4.15",
@@ -34,8 +32,7 @@
         "react-markdown": "^8.0.7",
         "tailwind-merge": "^1.13.2",
         "tailwindcss": "3.3.2",
-        "tailwindcss-animate": "^1.0.6",
-        "ui": "workspace:*"
+        "tailwindcss-animate": "^1.0.6"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "^13.4.19",

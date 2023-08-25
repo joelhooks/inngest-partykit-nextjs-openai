@@ -23,6 +23,17 @@ const DEFAULT_SYSTEM_MESSAGE: Message = {
   content: "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
 }
 
+/**
+ * 👋 This is a hook that provides a chat interface to the OpenAI API. The primary
+ * different between this and the `useChat` hook is that this hook will receive
+ * messages from the backend via a socket connection.
+ * 
+ * This is useful for our process where we want to run functions async BUT we 
+ * want to be able to confirm the action first so simply stream chat responses won't 
+ * work.
+ * @param chatOptions
+ * @returns 
+ */
 export function useBackendChat({
   id,
   initialMessages = [DEFAULT_SYSTEM_MESSAGE],
@@ -35,13 +46,17 @@ export function useBackendChat({
   const [messages, setMessages] = useState<(Message | CreateMessage)[]>(initialMessages);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isConfirmRequired, setIsConfirmRequired] = useState<boolean>(false);
+  // 👋 open a socket so that we can broadcast streaming responses from 
+  // openai api to any connected clients. 
   const socket = usePartySocket({
-    room: 'my-room',
+    room: process.env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME!,
     host: process.env.NEXT_PUBLIC_PARTY_KIT_URL!,
     onMessage: (message) => {
       setLastMessage(message);
     }
   });
+
+  // We use the socket id as the `requestId` that is used to track the workflow
   const requestId = useRef<string>(socket.id).current;
 
   // Keep a mutable buffer of incoming messages
@@ -76,8 +91,11 @@ export function useBackendChat({
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
+     
     }
-  }, []);
+    console.log('cancel::' + requestId, socket)
+    socket.send(`cancel::${requestId}`)
+  }, [socket]);
 
   const append = useCallback(
     async (message: Message | CreateMessage) => {
@@ -93,8 +111,6 @@ export function useBackendChat({
     },
     [messages]
   );
-
-
 
   // State to update chat UI
   useEffect(() => {
@@ -183,6 +199,7 @@ export function useBackendChat({
           confirm
         }),
       });
+      
     },
     []
   );

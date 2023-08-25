@@ -4,11 +4,9 @@ import {
     OpenAIApi,
 } from "openai-edge"
 import {inngest} from "./inngest.server.client";
-import type { AIMessage, FunctionCall, Functions } from "./types";
-import { Invoker } from "./invoker";
+import type { AIMessage, FunctionCall, Functions } from "@/types";
+import { FunctionInvoker } from "./function-invoker";
 import { LinearClient } from "@linear/sdk";
-
-
 
 const config = new Configuration({apiKey: process.env.OPENAI_API_KEY})
 const openai = new OpenAIApi(config)
@@ -28,14 +26,12 @@ export const aibot = inngest.createFunction(
     },
     {event: "api/chat.started"},
     async ({event, step}) => {
-        const invoker = new Invoker({
+        const invoker = new FunctionInvoker({
             openai,
             functions,
             requestId: event.data.requestId,
             });
 
-        // const messages = await invoker.start(event.data.messages, step);
-        console.log(event.data.messages)
         const messages = await invoker.start(event.data.messages as AIMessage[], step);
         return messages;
     }
@@ -86,6 +82,7 @@ const functions: Functions = {
     },
     confirm: true,
     invoke: async (f: FunctionCall, _m: ChatCompletionRequestMessage[]) => {
+      console.log("🤡 Not actually deleting issues!", f.arguments.id);
       return true;
     },
   },

@@ -1,15 +1,18 @@
 import type { ChatCompletionRequestMessage, OpenAIApi } from "openai-edge";
-import type { AIMessage, AIOutput, Functions, ProgressWriter } from "./types";
-import { isFunctionCall } from "./utils/is-function-call";
-import { formatFunctions } from "./utils/format-functions";
-import { parseFunctionCall } from "./utils/parse-function-call";
-import { WriteStrategyManyRequests, publish } from "./write-many";
-import { CONFIRM, DONE } from "./enums";
+import type { AIMessage, AIOutput, Functions, ProgressWriter } from "@/types";
+import { isFunctionCall } from "@/lib/is-function-call";
+import { formatFunctions } from "@/lib/format-functions";
+import { parseFunctionCall } from "@/lib/parse-function-call";
+import { WriteStrategyManyRequests, publish } from "./message-writer";
+import { CONFIRM, DONE } from "@/lib/enums";
 
 /**
  * The invoker dynamically creates steps to call OpenAI and functions.
+ * 
+ * 😅 There's a fair bit of complexity below, but it's mostly to handle
+ * the various edge cases of calling OpenAI and functions.
  */
-export class Invoker {
+export class FunctionInvoker {
     #ai: OpenAIApi;
     #fns: Functions;
     #messages: AIMessage[];

@@ -1,5 +1,5 @@
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import type { AIMessage, AIOutput } from "./types";
+import type { AIMessage, AIOutput } from "@/types";
 
 export class WriteStrategyManyRequests {
   requestId: string;
@@ -58,7 +58,6 @@ export class WriteStrategyManyRequests {
         resolve();
         return;
       }
-      console.log("buffering", this.buffer.contents);
       publish(this.buffer.contents, this.requestId);
       resolve();
       this.buffer = {
@@ -70,14 +69,14 @@ export class WriteStrategyManyRequests {
 
 
 /**
- * Publish a message to the party. Sends a POST request to the party server.
+ * 🥳 Publish a message to the party. Sends a POST request to the partykit server.
+ * The server then broadcasts it to all connected clients.
  *
  * @param body
  * @param requestId
  */
 export const publish = async (body: string, requestId: string) => {
-  const partyUrl = `${process.env.NEXT_PUBLIC_PARTY_KIT_URL!}/party/my-room`
-  console.log('partyUrl', partyUrl)
+  const partyUrl = `${process.env.NEXT_PUBLIC_PARTY_KIT_URL!}/party/${process.env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME}`
   await fetch(partyUrl, {
     method: "POST",
     body: JSON.stringify({

@@ -51,12 +51,6 @@ export default class Main implements PartyServer {
     this.messages = (await this.party.storage.get<string[]>("messages")) ?? [];
   }
 
-  // You can now tag connections, and retrieve tagged connections using Party.getConnections()
-  getConnectionTags(connection: PartyConnection, ctx: PartyConnectionContext) {
-    const country = (ctx.request.cf?.country as string) ?? "unknown";
-    return [country];
-  }
-
   // onConnect, onRequest, onAlarm no longer receive the room argument.
   async onRequest(_req: PartyRequest) {
     const messageBody: {requestId: string, body: string} = await _req.json();

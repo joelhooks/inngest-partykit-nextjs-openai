@@ -10,7 +10,7 @@ import type {CreateMessage, Message} from "ai";
 export default function Chat() {
   const formRef = React.useRef<HTMLFormElement>(null);
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
-  const {input, setInput, handleSubmit, isLoading, messages, buffer, isConfirmRequired, onConfirm} = useBackendChat()
+  const {input, setInput, handleSubmit, isLoading, messages, buffer, isConfirmRequired, onConfirm, stop} = useBackendChat()
   const disabled = input.length === 0 || isLoading;
 
   React.useEffect(() => {
@@ -110,6 +110,12 @@ export default function Chat() {
           </a>
         </small>
       </div>
+      <button
+            onClick={stop}
+            className={`absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all`}
+          >
+            Stop
+          </button>
     </main>
   )
 }

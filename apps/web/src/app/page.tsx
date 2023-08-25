@@ -1,10 +1,7 @@
-import { Header } from "ui";
-import Chat from "./chat-box";
+import Chat from "@/components/chat-box";
 
 export default function Page(): JSX.Element {
   return (
-    <>
-      <Chat />
-    </>
+   <Chat />
   );
 }
