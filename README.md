@@ -20,7 +20,7 @@ make human level decisions.
 ## How it works
 
 The user has a text box that they can type into and ask for a particular task to accomplish. This
-initiates a workflow with Inngest. As OpenAI streams back it's repsponses, we can use Partykit
+initiates a workflow with Inngest. As OpenAI streams back it's responses, we can use Partykit
 as a proxy for the streams and broadcast those responses to **every subscribed user**.
 
 **This means that we are able to create multiplayer workflows that are assisted by AI.**
